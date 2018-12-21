@@ -1,0 +1,3 @@
+[submodule "providers/pia"]
+	path = providers/pia
+	url = git@github.com:passepartoutvpn/api-source-pia.git
