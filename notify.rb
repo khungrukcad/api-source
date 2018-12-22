@@ -4,17 +4,9 @@ require "net/http"
 Dotenv.load(".env.default", ".env.secret")
 
 def notify_failures(failures)
-    template = <<MSG
-Hi,
-
-the API generation script failed for the following providers:
-
-%{failure_list}
-
-Cheers
-MSG
+    template = "API generation failed for: %{providers}"
     vars = {
-        :failure_list => failures.map { |p| "- #{p}" }.join("\n")
+        :providers => failures.map { |name| "\"#{name}\"" }.join(",")
     }
     message = template % vars
 
