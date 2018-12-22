@@ -1,15 +1,18 @@
 require "dotenv"
 require "json"
+require 'fileutils'
 require_relative "notify"
 
 Dotenv.load(".env.default", ".env.secret")
 
 providers = ENV["PROVIDERS"].split(" ")
-web = "../api/#{ENV["VERSION"]}"
+web = "#{ENV["API_PATH"]}/#{ENV["VERSION"]}"
 failed = []
 
+endpoint = "net"
+FileUtils.mkdir_p("#{web}/#{endpoint}")
+
 providers.each { |name|
-    endpoint = "net"
     key = name.downcase
     resource = "#{key}.json"
 
