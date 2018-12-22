@@ -1,5 +1,6 @@
 require "dotenv"
 require "json"
+require_relative "notify"
 
 Dotenv.load(".env.default", ".env.secret")
 
@@ -42,6 +43,6 @@ providers.each { |name|
 
 if !failed.empty?
     puts
-    print "Failed providers: "
-    puts failed
+    puts "Notifying failed providers: #{failed}"
+    notify_failures(failed)
 end
