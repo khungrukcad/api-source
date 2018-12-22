@@ -5,7 +5,7 @@ require_relative "notify"
 Dotenv.load(".env.default", ".env.secret")
 
 providers = ENV["PROVIDERS"].split(" ")
-web = "../api/#{ENV["VERSION"]}"
+web = "$API_PATH/#{ENV["VERSION"]}"
 failed = []
 
 providers.each { |name|
