@@ -1,7 +1,7 @@
 require "dotenv"
 require "json"
 require 'fileutils'
-require_relative "notify"
+require_relative "lib/notify"
 
 Dotenv.load(".env.default", ".env.secret")
 
