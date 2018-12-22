@@ -34,8 +34,8 @@ providers.each { |name|
     json = JSON.parse(json_string)
 
     # inject metadata
-    json["build"] = ENV["MIN_BUILD"]
-    json["provider"] = name
+    json["build"] = ENV["MIN_BUILD"].to_i
+    json["name"] = name
 
     file = File.new("#{web}/#{endpoint}/#{resource}", "w")
     file << json.to_json
