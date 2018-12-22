@@ -10,7 +10,6 @@ deploy:
   provider: pages
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
-  committer-from-gh: true
   keep-history: false
   on:
       branch: master #push-to-github
