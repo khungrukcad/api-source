@@ -38,7 +38,7 @@ providers.each { |name|
     json["provider"] = name
 
     file = File.new("#{web}/#{endpoint}/#{resource}", "w")
-    file << json.to_s
+    file << json.to_json
     file.close()
 
     puts "Completed!"
