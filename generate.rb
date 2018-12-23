@@ -16,9 +16,9 @@ providers.each { |name|
     key = name.downcase
     resource = "#{key}.json"
 
-    puts ""
+    puts
     puts "====== #{name} ======"
-    puts ""
+    puts
 
     #puts "Deleting old JSON..."
     #rm -f "$WEB/$ENDPOINT/$JSON"
