@@ -47,5 +47,9 @@ providers.each { |name|
 if !failed.empty?
     puts
     puts "Notifying failed providers: #{failed}"
-    notify_failures(failed)
+    notify_failures(
+        ENV["TELEGRAM_TOKEN"],
+        ENV["TELEGRAM_CHAT"],
+        failed
+    )
 end
