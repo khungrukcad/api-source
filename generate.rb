@@ -1,51 +1,89 @@
 require "dotenv"
 require "json"
-require 'fileutils'
+require "fileutils"
+require "digest"
 require_relative "lib/notify"
 
 Dotenv.load(".env.default", ".env.secret")
 
 providers = ENV["PROVIDERS"].split(" ")
-web = "#{ENV["API_PATH"]}/#{ENV["VERSION"]}"
-failed = []
+soft_failures = []
 
+web = "gen/#{ENV["VERSION"]}"
 endpoint = "net"
-FileUtils.mkdir_p("#{web}/#{endpoint}")
+path = "#{web}/#{endpoint}"
+digests = {}
+
+FileUtils.mkdir_p(path)
 
 providers.each { |name|
     key = name.downcase
     resource = "#{key}.json"
 
-    puts ""
+    # ensure that repo and submodules were not altered
+    repo_status = `git status --porcelain`
+    puts repo_status
+    raise "Dirty git status" if !repo_status.empty?
+
+    puts
     puts "====== #{name} ======"
-    puts ""
+    puts
 
     #puts "Deleting old JSON..."
     #rm -f "$WEB/$ENDPOINT/$JSON"
     puts "Scraping..."
 
-    json_string = `sh providers/#{key}/#{endpoint}.sh`
-    if !$?.success?
-        failed << name
-        puts "Failed!"
-        next
+    begin
+        json_string = `sh providers/#{key}/#{endpoint}.sh`
+        raise "#{name}: #{endpoint}.sh failed or is missing" if !$?.success?
+
+        json = nil
+        begin
+            json = JSON.parse(json_string)
+        rescue
+            raise "#{name}: invalid JSON"
+        end
+
+        # inject metadata
+        json["build"] = ENV["MIN_BUILD"].to_i
+        json["name"] = name
+
+        json_string = json.to_json
+        file = File.new("#{path}/#{resource}", "w")
+        file << json.to_json
+        file.close()
+
+        # save JSON digest
+        digests[key] = Digest::SHA1.hexdigest(json_string)
+
+        puts "Completed!"
+    rescue StandardError => msg
+
+        # keep going
+        soft_failures << name
+
+        puts "Failed: #{msg}"
     end
-
-    json = JSON.parse(json_string)
-
-    # inject metadata
-    json["build"] = ENV["MIN_BUILD"].to_i
-    json["name"] = name
-
-    file = File.new("#{web}/#{endpoint}/#{resource}", "w")
-    file << json.to_json
-    file.close()
-
-    puts "Completed!"
 }
 
-if !failed.empty?
+# fail abruptly on JSON hijacking
+providers.each { |name|
+    next if soft_failures.include? name
+
+    key = name.downcase
+    resource = "#{key}.json"
+    subject = IO.binread("#{path}/#{resource}")
+    md = Digest::SHA1.hexdigest(subject)
+    raise "#{name}: corrupt digest" if md != digests[key]
+}
+
+# succeed but notify soft failures
+if !soft_failures.empty?
     puts
-    puts "Notifying failed providers: #{failed}"
-    notify_failures(failed)
+    puts "Notifying failed providers: #{soft_failures}"
+    notify_failures(
+        ENV["TELEGRAM_TOKEN"],
+        ENV["TELEGRAM_CHAT"],
+        soft_failures
+    )
 end
