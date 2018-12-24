@@ -1,13 +1,13 @@
 require "dotenv"
 require "json"
-require 'fileutils'
+require "fileutils"
 require_relative "lib/notify"
 
 Dotenv.load(".env.default", ".env.secret")
-
 providers = ENV["PROVIDERS"].split(" ")
-web = "#{ENV["API_PATH"]}/#{ENV["VERSION"]}"
 failed = []
+
+web = "gen/#{ENV["VERSION"]}"
 
 endpoint = "net"
 FileUtils.mkdir_p("#{web}/#{endpoint}")
