@@ -2,6 +2,8 @@ language: ruby
 cache: bundler
 rvm:
   - 2.5.1
+git:
+    submodules: true
 script:
   - ./generate.sh
 deploy:
