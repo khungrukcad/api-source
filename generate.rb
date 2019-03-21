@@ -8,6 +8,7 @@ Dotenv.load(".env.default", ".env.secret")
 
 providers = ENV["PROVIDERS"].split(" ")
 soft_failures = []
+args = ARGV.join(" ")
 
 web = "gen/#{ENV["VERSION"]}"
 endpoint = "net"
@@ -34,7 +35,7 @@ providers.each { |name|
     puts "Scraping..."
 
     begin
-        json_string = `sh providers/#{key}/#{endpoint}.sh`
+        json_string = `sh providers/#{key}/#{endpoint}.sh #{args}`
         raise "#{name}: #{endpoint}.sh failed or is missing" if !$?.success?
 
         json = nil
