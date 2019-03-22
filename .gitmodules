@@ -4,3 +4,6 @@
 [submodule "providers/tunnelbear"]
 	path = providers/tunnelbear
 	url = https://github.com/passepartoutvpn/api-source-tunnelbear
+[submodule "providers/mullvad"]
+	path = providers/mullvad
+	url = https://github.com/passepartoutvpn/api-source-mullvad
