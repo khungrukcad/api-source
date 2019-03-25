@@ -7,3 +7,9 @@
 [submodule "providers/mullvad"]
 	path = providers/mullvad
 	url = https://github.com/passepartoutvpn/api-source-mullvad
+[submodule "providers/windscribe"]
+	path = providers/windscribe
+	url = https://github.com/passepartoutvpn/api-source-windscribe
+[submodule "providers/protonvpn"]
+	path = providers/protonvpn
+	url = https://github.com/passepartoutvpn/api-source-protonvpn
