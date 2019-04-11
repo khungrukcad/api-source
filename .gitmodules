@@ -13,3 +13,6 @@
 [submodule "providers/protonvpn"]
 	path = providers/protonvpn
 	url = https://github.com/passepartoutvpn/api-source-protonvpn
+[submodule "providers/nordvpn"]
+	path = providers/nordvpn
+	url = https://github.com/passepartoutvpn/api-source-nordvpn
