@@ -13,7 +13,7 @@ args = ARGV.join(" ")
 
 web = "gen"
 versions = [1, 2]
-min_builds = [1281, 1750]
+min_builds = [1736, 1736]
 endpoint = "net"
 digests = {}
 
