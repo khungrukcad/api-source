@@ -12,8 +12,8 @@ soft_failures = []
 args = ARGV.join(" ")
 
 web = "gen"
-versions = [1, 2]
-min_builds = [1281, 1736]
+versions = ENV["VERSIONS"].split(" ").map(&:to_i)
+min_builds = ENV["MIN_BUILDS"].split(" ").map(&:to_i)
 endpoint = "net"
 digests = {}
 
