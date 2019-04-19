@@ -45,5 +45,7 @@ def convert(version, endpoint, json)
         categories[category_name] = category
     }
 
-    return categories
+    json.delete("pools")
+    json["categories"] = categories
+    return json
 end
