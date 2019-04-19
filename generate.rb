@@ -36,7 +36,7 @@ providers.each { |name|
 
     begin
         prefix = "providers/#{key}"
-        system("sh #{prefix}/update-servers.sh") unless ARGV.include? "noupdate"
+        system("cd #{prefix} && ./update-servers.sh") unless ARGV.include? "noupdate"
 
         json_string = `sh #{prefix}/#{endpoint}.sh #{args}`
         raise "#{name}: #{endpoint}.sh failed or is missing" if !$?.success?
