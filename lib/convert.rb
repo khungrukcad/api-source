@@ -10,7 +10,7 @@ def convert(version, endpoint, json)
     pools = json["pools"]
 
     categories = {
-        "default": {
+        default: {
             #"country.area": {
             #   "country": "US",
             #   "pools": []
@@ -19,7 +19,7 @@ def convert(version, endpoint, json)
     }
 
     pools.each { |p|
-        category_name = p["category"] || "default"
+        category_name = p["category"] || :default
         category = categories[category_name] || {}
 
         group_key = p["country"].clone
