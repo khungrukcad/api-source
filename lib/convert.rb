@@ -40,8 +40,9 @@ def convert(version, endpoint, json)
             pools = group["pools"]
         end
 
-        p.delete("country")
-        p.delete("area")
+        #p.delete("country")
+        #p.delete("area")
+        p.delete("name")
 
         pools << p
 
