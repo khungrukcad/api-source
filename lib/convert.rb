@@ -18,6 +18,15 @@ def convert(version, endpoint, json)
         }
     }
 
+    externalHostname = true
+    json["presets"].each { |p|
+        external = p["external"]
+        if external.nil? || !external.key?("hostname")
+            externalHostname = false
+            break
+        end
+    }
+
     pools.each { |p|
         category_name = p["category"] || :default
         category = categories[category_name] || {}
@@ -43,6 +52,10 @@ def convert(version, endpoint, json)
         #p.delete("country")
         #p.delete("area")
         p.delete("name")
+
+        if externalHostname
+            p.delete("hostname")
+        end
 
         pools << p
 
