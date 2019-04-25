@@ -51,7 +51,16 @@ def convert(version, endpoint, json)
         categories[category_name] = category
     }
 
+    categories_linear = []
+    categories.each { |k, v|
+        obj = {
+            name: k,
+            groups: v
+        }
+        categories_linear << obj
+    }
+
     json.delete("pools")
-    json["categories"] = categories
+    json["categories"] = categories_linear
     return json
 end
