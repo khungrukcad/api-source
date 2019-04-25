@@ -1,7 +1,12 @@
 def convert(version, endpoint, json)
     if version == 1
         json["pools"].each { |p|
-            p["name"] = "" # XXX: legacy non-optional
+            p["name"] = ""
+            p["num"] = p["num"].to_s
+            if not p["category"].nil?
+                p["free"] = (p["category"] == "free")
+            end
+            p.delete("category")
         }
         return json
     end
