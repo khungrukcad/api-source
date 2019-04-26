@@ -76,7 +76,7 @@ def convert(version, endpoint, json)
     categories.each { |k, v|
         obj = {
             name: k,
-            groups: v
+            groups: v.values
         }
         categories_linear << obj
     }
