@@ -6,6 +6,7 @@ def convert(version, endpoint, json)
             p["num"] = p["num"].to_s unless p["num"].nil?
             p["free"] = (p["category"] == "free") unless p["category"].nil?
             p.delete("category")
+            p.delete("resolved")
         }
         return old_json
     end
@@ -58,7 +59,9 @@ def convert(version, endpoint, json)
         #p.delete("area")
         p.delete("name")
 
-        if externalHostname
+        if p["resolved"].nil? && p["resolved"]
+            p.delete("hostname")
+        elsif externalHostname
             p.delete("hostname")
         end
 
