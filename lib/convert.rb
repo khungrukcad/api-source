@@ -74,6 +74,9 @@ def convert(version, endpoint, json)
 
     categories_linear = []
     categories.each { |k, v|
+        if k == :default
+            k = ""
+        end
         obj = {
             name: k,
             groups: v.values
