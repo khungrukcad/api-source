@@ -6,6 +6,7 @@ def convert(version, endpoint, json)
             p["num"] = p["num"].to_s unless p["num"].nil?
             p["free"] = (p["category"] == "free") unless p["category"].nil?
             p.delete("category")
+            p.delete("presets")
             p.delete("resolved")
         }
         return old_json
@@ -16,10 +17,7 @@ def convert(version, endpoint, json)
 
     categories = {
         default: {
-            #"country.area": {
-            #   "country": "US",
-            #   "pools": []
-            #}
+            groups: {}
         }
     }
 
@@ -34,14 +32,21 @@ def convert(version, endpoint, json)
 
     pools.each { |p|
         category_name = p["category"] || :default
-        category = categories[category_name] || {}
+        category = categories[category_name] || {groups: {}}
+
+        # pick first
+        if p.key?("presets")
+            category["presets"] = p["presets"]
+            p.delete("presets")
+        end
 
         group_key = p["country"].clone
         if p.key?("area")
             group_key << ".#{p['area']}"
         end
 
-        group = category[group_key]
+        groups = category[:groups]
+        group = groups[group_key]
         if group.nil?
             group = {
                 "country": p["country"],
@@ -66,9 +71,10 @@ def convert(version, endpoint, json)
         end
 
         pools << p
-
         group["pools"] = pools
-        category[group_key] = group
+        groups[group_key] = group
+        category[:groups] = groups
+
         categories[category_name] = category
     }
 
@@ -79,8 +85,11 @@ def convert(version, endpoint, json)
         end
         obj = {
             name: k,
-            groups: v.values
+            groups: v[:groups].values
         }
+        if v.key?("presets")
+            obj["presets"] = v["presets"]
+        end
         categories_linear << obj
     }
 
