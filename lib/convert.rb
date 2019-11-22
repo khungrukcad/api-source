@@ -12,7 +12,7 @@ def convert(version, endpoint, json)
         return old_json
     end
 
-    # version 2
+    # version 2+
     pools = json["pools"]
 
     categories = {

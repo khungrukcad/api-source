@@ -19,7 +19,6 @@ digests = {}
 
 providers.each { |name|
     key = name.downcase
-    resource = "#{key}.json"
 
     # ensure that repo and submodules were not altered
     repo_status = `git status --porcelain`
@@ -50,13 +49,25 @@ providers.each { |name|
 
         subjects = []
         versions.each_with_index { |v, i|
-            json = convert(v, endpoint, json_src)
-            path = "#{web}/v#{v}/#{endpoint}"
+            json = convert(v, endpoint, json_src.dup)
+
+            # different hierarchy
+            if v > 2
+                path = "#{web}/v#{v}/providers/#{key}"
+                resource = "#{endpoint}.json"
+            else
+                path = "#{web}/v#{v}/#{endpoint}"
+                resource = "#{key}.json"
+            end
             FileUtils.mkdir_p(path)
 
             # inject metadata
             json["build"] = min_builds[i]
-            json["name"] = name
+            if v == 3
+                json["name"] = key # lowercase
+            else
+                json["name"] = name
+            end
 
             json_v = json.to_json
             file = File.new("#{path}/#{resource}", "w")
@@ -79,15 +90,14 @@ providers.each { |name|
     end
 }
 
-# fail abruptly on JSON hijacking (v1 is the reference)
+# fail abruptly on JSON hijacking
 providers.each { |name|
     next if soft_failures.include? name
-
     key = name.downcase
-    path = "#{web}/v1/#{endpoint}"
-    resource = "#{key}.json"
 
-    subject = IO.binread("#{path}/#{resource}")
+    # v1 is the reference
+    path_v1 = "#{web}/v1/#{endpoint}/#{key}.json"
+    subject = IO.binread(path_v1)
     md = Digest::SHA1.hexdigest(subject)
     raise "#{name}: corrupt digest" if md != digests[key]
 }
