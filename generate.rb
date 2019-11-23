@@ -102,6 +102,18 @@ providers.each { |name|
     raise "#{name}: corrupt digest" if md != digests[key]
 }
 
+# serialize v3 index
+path_index = "#{web}/v3/providers/index.json"
+index = providers.map { |name|
+    {
+        "name": name.downcase,
+        "description": name
+    }
+}
+index_file = File.new(path_index, "w")
+index_file << index.to_json
+index_file.close()
+
 # succeed but notify soft failures
 if !soft_failures.empty?
     puts
