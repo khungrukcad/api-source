@@ -77,7 +77,7 @@ providers.each { |name|
             subjects << json_v
         }
 
-        # save JSON digest (v1)
+        # save JSON digest (v2)
         digests[key] = Digest::SHA1.hexdigest(subjects[0])
 
         puts "Completed!"
@@ -95,9 +95,9 @@ providers.each { |name|
     next if soft_failures.include? name
     key = name.downcase
 
-    # v1 is the reference
-    path_v1 = "#{web}/v1/#{endpoint}/#{key}.json"
-    subject = IO.binread(path_v1)
+    # v2 is the reference
+    path_v2 = "#{web}/v2/#{endpoint}/#{key}.json"
+    subject = IO.binread(path_v2)
     md = Digest::SHA1.hexdigest(subject)
     raise "#{name}: corrupt digest" if md != digests[key]
 }
