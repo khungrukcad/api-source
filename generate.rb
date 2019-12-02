@@ -7,7 +7,10 @@ require_relative "lib/notify"
 
 Dotenv.load(".env.default", ".env.secret")
 
-providers = ENV["PROVIDERS"].split(" ")
+providers_path = "providers/index.json"
+providers_json = File.read(providers_path)
+providers = JSON.parse(providers_json)
+
 soft_failures = []
 args = ARGV.join(" ")
 
@@ -17,8 +20,9 @@ min_builds = ENV["MIN_BUILDS"].split(" ").map(&:to_i)
 endpoint = "net"
 digests = {}
 
-providers.each { |name|
-    key = name.downcase
+providers.each { |map|
+    key = map["name"]
+    name = map["description"]
 
     # ensure that repo and submodules were not altered
     repo_status = `git status --porcelain`
@@ -91,9 +95,10 @@ providers.each { |name|
 }
 
 # fail abruptly on JSON hijacking
-providers.each { |name|
+providers.each { |map|
+    name = map["description"]
     next if soft_failures.include? name
-    key = name.downcase
+    key = map["name"]
 
     # v2 is the reference
     path_v2 = "#{web}/v2/#{endpoint}/#{key}.json"
@@ -102,17 +107,8 @@ providers.each { |name|
     raise "#{name}: corrupt digest" if md != digests[key]
 }
 
-# serialize v3 index
-path_index = "#{web}/v3/providers/index.json"
-index = providers.map { |name|
-    {
-        "name": name.downcase,
-        "description": name
-    }
-}
-index_file = File.new(path_index, "w")
-index_file << index.to_json
-index_file.close()
+# copy providers index
+FileUtils.cp(providers_path, "#{web}/v3/providers")
 
 # succeed but notify soft failures
 if !soft_failures.empty?
