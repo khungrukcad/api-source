@@ -13,7 +13,7 @@ def convert(version, endpoint, json)
     end
 
     # version 2+
-    pools = json["pools"]
+    pools = json["pools"].dup
 
     categories = {
         default: {
@@ -31,6 +31,7 @@ def convert(version, endpoint, json)
     }
 
     pools.each { |p|
+        p = p.dup
         category_name = p["category"] || :default
         category = categories[category_name] || {groups: {}}
 
@@ -40,7 +41,7 @@ def convert(version, endpoint, json)
             p.delete("presets")
         end
 
-        group_key = p["country"].clone
+        group_key = p["country"].dup
         if p.key?("area")
             group_key << ".#{p['area']}"
         end
