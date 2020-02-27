@@ -1,3 +1,5 @@
 #!/bin/sh
-rm -rf gen
+API="gen"
+rm -rf $API
+git clone --depth 1 https://github.com/passepartoutvpn/api $API
 bundle exec ruby generate.rb $*
