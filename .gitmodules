@@ -19,3 +19,6 @@
 [submodule "providers/vyprvpn"]
 	path = providers/vyprvpn
 	url = https://github.com/passepartoutvpn/api-source-vyprvpn
+[submodule "providers/hideme"]
+	path = providers/hideme
+	url = https://github.com/passepartoutvpn/api-source-hideme.git
