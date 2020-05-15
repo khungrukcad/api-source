@@ -2,6 +2,7 @@ require "dotenv"
 require "json"
 require "fileutils"
 require "digest"
+require "nokogiri"
 require_relative "lib/convert"
 require_relative "lib/notify"
 

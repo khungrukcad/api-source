@@ -4,6 +4,9 @@ GEM
     dotenv (2.7.5)
     fileutils (1.4.1)
     json (2.3.0)
+    mini_portile2 (2.4.0)
+    nokogiri (1.10.9)
+      mini_portile2 (~> 2.4.0)
 
 PLATFORMS
   ruby
@@ -12,6 +15,7 @@ DEPENDENCIES
   dotenv
   fileutils
   json
+  nokogiri
 
 BUNDLED WITH
    2.1.2

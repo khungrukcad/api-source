@@ -22,3 +22,6 @@
 [submodule "providers/hideme"]
 	path = providers/hideme
 	url = https://github.com/passepartoutvpn/api-source-hideme.git
+[submodule "providers/torguard"]
+	path = providers/torguard
+	url = https://github.com/passepartoutvpn/api-source-torguard
