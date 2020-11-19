@@ -17,7 +17,8 @@ args = ARGV.join(" ")
 
 web = "gen"
 versions = ENV["VERSIONS"].split(" ").map(&:to_i)
-min_builds = ENV["MIN_BUILDS"].split(" ").map(&:to_i)
+min_ios = ENV["MIN_IOS"].split(" ").map(&:to_i)
+min_macos = ENV["MIN_MACOS"].split(" ").map(&:to_i)
 endpoint = "net"
 digests = {}
 
@@ -56,23 +57,20 @@ providers.each { |map|
         versions.each_with_index { |v, i|
             json = convert(v, endpoint, json_src.dup)
 
-            # different hierarchy
-            if v > 2
-                path = "#{web}/v#{v}/providers/#{key}"
-                resource = "#{endpoint}.json"
-            else
-                path = "#{web}/v#{v}/#{endpoint}"
-                resource = "#{key}.json"
-            end
+            path = "#{web}/v#{v}/providers/#{key}"
+            resource = "#{endpoint}.json"
             FileUtils.mkdir_p(path)
 
             # inject metadata
-            json["build"] = min_builds[i]
             if v == 3
-                json["name"] = key # lowercase
+                json["build"] = min_ios[i]
             else
-                json["name"] = name
+                json["build"] = {
+                    "ios": min_ios[i],
+                    "macos": min_macos[i]
+                }
             end
+            json["name"] = key # lowercase
 
             json_v = json.to_json
             file = File.new("#{path}/#{resource}", "w")
@@ -82,7 +80,7 @@ providers.each { |map|
             subjects << json_v
         }
 
-        # save JSON digest (v2)
+        # save JSON digest
         digests[key] = Digest::SHA1.hexdigest(subjects[0])
 
         puts "Completed!"
@@ -101,9 +99,9 @@ providers.each { |map|
     next if soft_failures.include? name
     key = map["name"]
 
-    # v2 is the reference
-    path_v2 = "#{web}/v2/#{endpoint}/#{key}.json"
-    subject = IO.binread(path_v2)
+    # v3 is the reference
+    path_v3 = "#{web}/v3/providers/#{key}/#{endpoint}.json"
+    subject = IO.binread(path_v3)
     md = Digest::SHA1.hexdigest(subject)
     raise "#{name}: corrupt digest" if md != digests[key]
 }
