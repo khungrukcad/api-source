@@ -107,7 +107,9 @@ providers.each { |map|
 }
 
 # copy providers index
-FileUtils.cp(providers_path, "#{web}/v3/providers")
+versions.each { |v|
+    FileUtils.cp(providers_path, "#{web}/v#{v}/providers")
+}
 
 # succeed but notify soft failures
 if !soft_failures.empty?
